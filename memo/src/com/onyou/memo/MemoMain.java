@@ -23,8 +23,10 @@ public class MemoMain {
                     motion.read(sc);
                     break;
                 case "3": //수정
+                    motion.change(sc);
                     break;
                 case "4": //삭제
+                    motion.remove(sc);
                     break;
                 case "0": //종료
                     runFlag = false;

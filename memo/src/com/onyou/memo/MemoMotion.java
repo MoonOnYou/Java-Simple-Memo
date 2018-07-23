@@ -32,7 +32,7 @@ public class MemoMotion {
     }
     public void showList(){
         String fileList[] =file.list();
-        for(String list: fileList) println(list);
+        for(String list:fileList) println(list);
     }
 
     public void write(Scanner sc){
@@ -59,29 +59,76 @@ public class MemoMotion {
     }
 
     public void read(Scanner sc){
-        if(file.exists()) { println("읽을 목록이 존재하지 않습니다."); return; }
+        if(!file.exists()) { println("읽을 목록이 존재하지 않습니다."); return; }
         println("------- 읽기 모드입니다 -------");
         println(" 읽을 파일의 제목을 입력해 주세요 ");
         showList();
         String readFile = sc.nextLine();
-        if(readFile.equals(filename)){
-            try {
-                List<String> readAllLines = Files.readAllLines(path);
-                for(String lines: readAllLines)
-                    println(lines);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
+        try {
+            path = Paths.get(MEMO_DIR, readFile);
+            List<String> readAllLines = Files.readAllLines(path);
+            for(String lines: readAllLines)
+                println(lines);
+        } catch (IOException e) {
+            println("파일을 읽지 못했습니다.");
         }
 
+
+
     }
-    public void change(){
+    public void change(Scanner sc){
+        if(!file.exists()) { println("목록이 존재하지 않습니다."); return; }
         println("------- 수정 모드입니다 -------");
+        println(" 수정 할 파일의 제목을 입력해 주세요 ");
+        showList();
+        String ch = sc.nextLine();
+        try {
+            path = Paths.get(MEMO_DIR, ch);
+            List<String> readAllLines = Files.readAllLines(path);
+
+            StringBuilder content = new StringBuilder();         //전체글을 저장할 변수
+            for(String line: readAllLines) {
+                println(line);
+                content.append(line + "\n");
+            }
+
+            println("수정할 글자를 입력해 주세요");
+            String before = sc.nextLine();
+            println("어떻게 수정 할 것인지 입력해 주세요");
+            String after = sc.nextLine();
+
+            String result = content.toString().replaceAll(before, after);
+
+            println(result);
+            Files.write(path, result.getBytes());
+
+            println("수정이 완료 되었습니다.");
+
+        } catch (IOException e) {
+            println("파일을 읽지 못했습니다.");
+        }
+
+
+
+
+
     }
-    public void remove(){
+    public void remove(Scanner sc){
+        if(!file.exists()) { println("목록이 존재하지 않습니다."); return; }
         println("------- 삭제 모드입니다 -------");
+        println(" 삭제 할 파일의 제목을 입력해 주세요 ");
+        showList();
+        String removedFileName = sc.nextLine();
+
+        try {
+            path = Paths.get(MEMO_DIR, removedFileName);
+            Files.delete(path);
+        } catch (IOException e) {
+            println("파일을 삭제하지 못했습니다.");
+        }
     }
+
     public void println(Object obj){
         System.out.println( obj );
     }
